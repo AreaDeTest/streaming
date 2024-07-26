@@ -1,10 +1,10 @@
-import Streaming from "@/components/streaming";
+import LiveStream from "@/components/live-stream";
 
 
 export default function Home() {
   return (
     <>
-      <Streaming />
+      <LiveStream />
     </>
   )
 }

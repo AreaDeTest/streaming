@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  trailingSlash: true, 
+  trailingSlash: true,
+  reactStrictMode: true,
   images: {
     domains: ['res.cloudinary.com'],
   },
-}
+};
 module.exports = nextConfig;

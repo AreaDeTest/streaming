@@ -1,0 +1,1 @@
+npm run optimize-images >>> otimiza imagens do projeto

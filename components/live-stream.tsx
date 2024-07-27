@@ -8,16 +8,18 @@ export default function LiveStream() {
   const [peer, setPeer] = useState<SimplePeer.Instance | null>(null);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [stream, setStream] = useState<MediaStream | null>(null);
 
   const startStreaming = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      setStream(mediaStream);
       if (videoRef.current) {
-        videoRef.current.srcObject = stream;
+        videoRef.current.srcObject = mediaStream;
         videoRef.current.play();
       }
 
-      const recorder = new MediaRecorder(stream);
+      const recorder = new MediaRecorder(mediaStream);
       setMediaRecorder(recorder);
 
       const chunks: BlobPart[] = [];
@@ -65,15 +67,23 @@ export default function LiveStream() {
       recorder.start();
       setIsStreaming(true);
 
-      const p = new SimplePeer({ initiator: true, stream });
-      p.on('signal', (data) => {
-        fetch('/api/signal', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ signal: data }),
-        });
+      const p = new SimplePeer({ initiator: true, stream: mediaStream });
+      p.on('signal', async (data) => {
+        try {
+          const response = await fetch('/api/signal', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ sdp: data }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Erro ao publicar sinal: ${response.statusText}`);
+          }
+        } catch (error) {
+          console.error('Erro ao publicar sinal:', error);
+        }
       });
 
       p.on('connect', () => {
@@ -89,14 +99,17 @@ export default function LiveStream() {
   const stopStreaming = () => {
     if (mediaRecorder) {
       mediaRecorder.stop();
-      setIsStreaming(false);
     }
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+    setIsStreaming(false);
   };
 
   return (
     <section className="flex flex-col items-center justify-center h-screen">
-      <div className="flex flex-col items-center space-y-4">
-        <video ref={videoRef} className="w-full max-w-lg bg-black" controls />
+      <div className="flex flex-col items-center space-y-4 p-4 bg-white shadow-md rounded-md">
+        <video ref={videoRef} className="w-full max-w-2xl bg-black rounded-md" controls />
         <div className="flex space-x-4">
           <button
             onClick={startStreaming}
@@ -116,7 +129,16 @@ export default function LiveStream() {
           </button>
         </div>
       </div>
+      <div className="flex flex-col items-center space-y-4 p-4 bg-white shadow-md rounded-md mt-8 w-full max-w-2xl">
+        <div className="relative w-full pt-[56.25%]">
+          <iframe
+            src="https://customer-e0ksx71mz4nqibcu.cloudflarestream.com/415245fc4d9b1495cf930107bffb4912/iframe"
+            className="absolute top-0 left-0 w-full h-full border-none rounded-md"
+            allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+            allowFullScreen
+          ></iframe>
+        </div>
+      </div>
     </section>
   );
 }
-

@@ -68,24 +68,22 @@ export default function LiveStream() {
       setIsStreaming(true);
 
       const p = new SimplePeer({ initiator: true, stream: mediaStream });
-
       p.on('signal', async (data) => {
-        if (data.type === 'offer' || data.type === 'answer') {
-          try {
-            const response = await fetch('/api/signal', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ sdp: data }),
-            });
+        console.log('Sending signal:', data);
+        try {
+          const response = await fetch('/api/signal', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ sdp: data }),
+          });
 
-            if (!response.ok) {
-              throw new Error(`Erro ao publicar sinal: ${response.statusText}`);
-            }
-          } catch (error) {
-            console.error('Erro ao publicar sinal:', error);
+          if (!response.ok) {
+            throw new Error(`Erro ao publicar sinal: ${response.statusText}`);
           }
+        } catch (error) {
+          console.error('Erro ao publicar sinal:', error);
         }
       });
 

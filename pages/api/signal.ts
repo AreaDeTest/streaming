@@ -2,7 +2,11 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { signal } = req.body;
+    const { sdp } = req.body;
+
+    if (!sdp) {
+      return res.status(400).json({ message: 'SDP is required' });
+    }
 
     try {
       const response = await fetch('https://customer-e0ksx71mz4nqibcu.cloudflarestream.com/f03a60dd94e1bd8ec1cb40c84d0493dek415245fc4d9b1495cf930107bffb4912/webRTC/publish', {
@@ -10,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(signal),
+        body: JSON.stringify({ sdp }), // Certificando que estamos enviando o SDP corretamente
       });
 
       if (!response.ok) {

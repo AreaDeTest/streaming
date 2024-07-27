@@ -4,17 +4,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     const { sdp } = req.body;
 
-    if (!sdp) {
-      return res.status(400).json({ message: 'SDP is required' });
-    }
-
     try {
-      const response = await fetch('https://customer-e0ksx71mz4nqibcu.cloudflarestream.com/f03a60dd94e1bd8ec1cb40c84d0493dek415245fc4d9b1495cf930107bffb4912/webRTC/publish', {
+      const response = await fetch('https://customer-e0ksx71mz4nqibcu.cloudflarestream.com/815582766c21f4fbad2260b77965c53fkf3517e33688be73544771ea9ea026a55/webRTC/publish', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ sdp }), // Certificando que estamos enviando o SDP corretamente
+        body: JSON.stringify({ sdp }),
       });
 
       if (!response.ok) {

@@ -132,7 +132,7 @@ export default function LiveStream() {
       <div className="flex flex-col items-center space-y-4 p-4 bg-white shadow-md rounded-md mt-8 w-full max-w-2xl">
         <div className="relative w-full pt-[56.25%]">
           <iframe
-            src="https://customer-e0ksx71mz4nqibcu.cloudflarestream.com/415245fc4d9b1495cf930107bffb4912/iframe"
+            src="https://customer-e0ksx71mz4nqibcu.cloudflarestream.com/f3517e33688be73544771ea9ea026a55/iframe"
             className="absolute top-0 left-0 w-full h-full border-none rounded-md"
             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
             allowFullScreen

@@ -6,6 +6,7 @@ const nextConfig = {
     domains: [
       'res.cloudinary.com',
       'customer-e0ksx71mz4nqibcu.cloudflarestream.com',
+      
     ],
   },
 };

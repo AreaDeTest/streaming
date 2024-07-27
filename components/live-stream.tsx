@@ -69,14 +69,14 @@ export default function LiveStream() {
 
       const p = new SimplePeer({ initiator: true, stream: mediaStream });
       p.on('signal', async (data) => {
-        console.log('Sending signal:', data);
+        console.log('Sending signal:', JSON.stringify(data, null, 2));
         try {
           const response = await fetch('/api/signal', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ sdp: data }),
+            body: JSON.stringify(data),
           });
 
           if (!response.ok) {

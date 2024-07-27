@@ -4,13 +4,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === 'POST') {
     const { sdp } = req.body;
 
+    console.log('Received SDP:', JSON.stringify(sdp, null, 2)); 
+
     try {
       const response = await fetch('https://customer-e0ksx71mz4nqibcu.cloudflarestream.com/815582766c21f4fbad2260b77965c53fkf3517e33688be73544771ea9ea026a55/webRTC/publish', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(sdp),
+        body: JSON.stringify({ sdp }),
       });
 
       if (!response.ok) {
